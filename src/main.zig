@@ -1,14 +1,17 @@
 const std = @import("std");
-const BTreeNode = @import("BTreeNode").BTreeNode;
+const BTreeNode = @import("btree.zig").BTreeNode;
 
-pub fn main() void {
+pub fn main() !void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    const allocator = arena.allocator();
+
     const maxKey = 20;
 
-    var tree: BTreeNode = BTreeNode.new(maxKey);
+    var tree: BTreeNode = try BTreeNode.init(allocator, maxKey);
 
     for (0..maxKey) |value| {
         tree.insert(value);
     }
 
-    tree.visualize();
+    tree.visualize(0);
 }

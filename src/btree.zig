@@ -1,4 +1,6 @@
 const std = @import("std");
+const Arena = std.heap.ArenaAllocator;
+const Allocator = std.mem.Allocator;
 
 pub const BTreeNode = struct {
     keys: []u64,
@@ -7,8 +9,10 @@ pub const BTreeNode = struct {
     maxKeys: u8,
     keyCount: u8,
 
-    pub fn init(maxKeys: u8) BTreeNode {
-        return BTreeNode{ .keys = std.heap.page_allocator.alloc(u64, maxKeys), .children = std.heap.page_allocator.alloc(BTreeNode, maxKeys + 1), .isLeaf = true, .maxKeys = maxKeys, .keyCount = 0 };
+    pub fn init(allocator: Allocator, maxKeys: u8) !BTreeNode {
+        const keys = try allocator.alloc(u64, maxKeys);
+        const children = try allocator.alloc(BTreeNode, maxKeys + 1);
+        return BTreeNode{ .keys = keys, .children = children, .isLeaf = true, .maxKeys = maxKeys, .keyCount = 0 };
     }
 
     pub fn visualize(self: BTreeNode, level: u8) void {
