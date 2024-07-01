@@ -16,12 +16,17 @@ pub const BTreeNode = struct {
     }
 
     pub fn visualize(self: BTreeNode, level: u8) void {
-        for (0..level) |_| {
-            std.debug.print(" ", .{});
-        }
-        std.debug.print("Level {d}: ", .{level});
+        const indent = "    ";
+        std.debug.print("{s}Level {d}: \n", .{ indent, level });
         for (0..self.keyCount) |i| {
             std.debug.print("{d} ", .{self.keys[i]});
+        }
+        if (!self.isLeaf) {
+            for (0..self.keyCount + 1) |i| {
+                if (self.children[i]) {
+                    self.children[i].?.visualize(level + 1);
+                }
+            }
         }
     }
 
@@ -29,6 +34,8 @@ pub const BTreeNode = struct {
         if (self.keyCount < self.maxKeys) {
             self.keys[self.keyCount] = key;
             self.keyCount += 1;
+        } else {
+            std.debug.print("Node full, splitting required (not implemented)\n", .{});
         }
     }
 };

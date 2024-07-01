@@ -9,7 +9,7 @@ pub fn main() !void {
 
     var tree: BTreeNode = try BTreeNode.init(allocator, maxKey);
 
-    for (0..maxKey) |value| {
+    for (0..400) |value| {
         tree.insert(value);
     }
 
